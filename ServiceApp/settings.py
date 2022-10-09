@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'users',
     'appliances',
     'parts',
-    'tools'
+    'tools',
+    'task'
 ]
 
 MIDDLEWARE = [

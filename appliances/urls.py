@@ -1,12 +1,11 @@
+from decimal import DefaultContext
+from xml.etree.ElementInclude import include
 from rest_framework import routers
-from rest_framework.urlpatterns import format_suffix_patterns
+from rest_framework.routers import DefaultRouter
 from django.urls import path
 from appliances import views
 
+router = DefaultRouter()
+router.register(r'appliances', views.ApplianceViewSet, basename="appliances")
 
-urlpatterns = [
-    path('appliances/', views.ApplianceList.as_view()),
-    path('appliances/<int:pk>/', views.ApplianceDetail.as_view()),
-]
-
-urlpatterns = format_suffix_patterns(urlpatterns)
+urlpatterns = router.urls
