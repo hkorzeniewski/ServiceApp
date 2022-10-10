@@ -6,12 +6,14 @@ import urllib.request
 
 from users.serializers import UserSerializer
 from .models import Appliance
+from task.serializers import TaskSerializer
 from django.contrib.auth.models import User
 
 class ApplianceSerializer(serializers.ModelSerializer):
-    creator = UserSerializer(many=False)
+    creator = UserSerializer()
     creator = serializers.SlugRelatedField(
         read_only=True, slug_field="username")
+    tasks = TaskSerializer(read_only=True, many=True)
     class Meta:
         model = Appliance
         fields = (
@@ -20,6 +22,7 @@ class ApplianceSerializer(serializers.ModelSerializer):
             "serial_number",
             "creation_time",
             "description",
-            "creator"
+            "creator",
+            "tasks"
         )
     

@@ -10,3 +10,6 @@ class Appliance(models.Model):
     creation_time = models.DateTimeField(auto_now_add=True)
     description = models.TextField()
     creator = models.ForeignKey(User, related_name='creator', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return '{}'.format(self.name + self.serial_number)
