@@ -4,13 +4,13 @@ from rest_framework import serializers
 import urllib.request
 
 
-from users.serializers import UserSerializer
+from users.serializers import UserListSerializer
 from .models import Appliance
 from task.serializers import TaskSerializer
 from django.contrib.auth.models import User
 
 class ApplianceSerializer(serializers.ModelSerializer):
-    creator = UserSerializer()
+
     creator = serializers.SlugRelatedField(
         read_only=True, slug_field="username")
     tasks = TaskSerializer(read_only=True, many=True)
