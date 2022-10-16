@@ -10,11 +10,8 @@ from django.contrib.auth.hashers import (
 
 # Create your models here.
 class MyUserMenager(BaseUserManager):
-    def create_user(self, first_name, last_name, email, username, password):
-
+    def create_user(self,username, email, password, **extra_fields):
         user=self.model(
-            first_name=first_name,
-            last_name=last_name,
             email=email,
             username=username,
             password=password
@@ -34,7 +31,7 @@ class MyUserMenager(BaseUserManager):
             raise ValueError('Superuser must have is_staff=True.')
         if extra_fields.get('is_superuser') is not True:
             raise ValueError('Superuser must have is_superuser=True.')
-        return self.create_user(email, password, **extra_fields)
+        return self.create_user(username, email, password, **extra_fields)
 
 
 class User(AbstractUser):
@@ -45,7 +42,6 @@ class User(AbstractUser):
         ('Worker', 'Worker')
     )
   
-
     first_name = models.CharField(max_length=20, null=False)
     last_name = models.CharField(max_length=20, null=False)
     email = models.EmailField(max_length=250)
