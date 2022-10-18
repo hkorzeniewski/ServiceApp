@@ -29,18 +29,11 @@ class AdminCreateUserTest(APITestCase):
 
     def test_admin_can_create_user(self):
         self.client.force_login(user=self.superuser)
-        print(self.superuser.is_superuser)
-        data = {
-            "username": "testtest",
-            "password": "test1234",
-            "email": "test@test.com",
-            "first_name": "testfirstname",
-            "last_name": "testlastname",
-            "member_position": "Worker"
-        }
+        # print(self.superuser.is_superuser)
+
         response = self.client.post(
-            "http://127.0.0.1:8000/users/admin/", data, format='json')
-        print(response.data)
+            "http://127.0.0.1:8000/users/admin/", self.data, format='json')
+        # print(response.data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
 

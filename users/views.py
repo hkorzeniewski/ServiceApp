@@ -2,7 +2,7 @@ import imp
 from django.shortcuts import render
 from django.contrib.auth.models import User
 from rest_framework import viewsets
-from rest_framework import permissions
+from rest_framework.permissions import DjangoModelPermissions
 
 from .serializers import UserAdminSerializer, UserListSerializer
 from .models import User
@@ -13,7 +13,7 @@ class UserAdminViewSet(viewsets.ModelViewSet):
 
     queryset = User.objects.all()
     serializer_class = UserAdminSerializer
-    permission_classes = [permissions.IsAdminUser]
+    permission_classes = [DjangoModelPermissions]
 
     def get_object(self):
         pk = self.kwargs.get('pk')
@@ -27,4 +27,4 @@ class UserAdminViewSet(viewsets.ModelViewSet):
 class UserListViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserListSerializer
-    permission_classes =[permissions.IsAuthenticated]
+    permission_classes =[DjangoModelPermissions]
