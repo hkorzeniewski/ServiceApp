@@ -2,8 +2,12 @@ from email.policy import default
 from random import choices
 from django.db import models
 from django.contrib.auth import get_user_model
-User = get_user_model()
 
+from users.models import User
+
+from pygments.lexers import get_lexer_by_name
+from pygments.formatters.html import HtmlFormatter
+from pygments import highlight
 class Appliance(models.Model):
 
     name = models.CharField(max_length=100, blank=False)
@@ -13,4 +17,5 @@ class Appliance(models.Model):
     creator = models.ForeignKey(User, related_name='creator', on_delete=models.CASCADE)
 
     def __str__(self):
-        return '{}'.format(self.name + self.serial_number)
+        return '{}'.format(self.name + " SN:" + self.serial_number)
+

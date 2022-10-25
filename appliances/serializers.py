@@ -9,7 +9,8 @@ from .models import Appliance
 from task.serializers import TaskSerializer
 from django.contrib.auth.models import User
 
-class ApplianceSerializer(serializers.ModelSerializer):
+
+class ApplianceSerializer(serializers.HyperlinkedModelSerializer):
 
     creator = serializers.SlugRelatedField(
         read_only=True, slug_field="username")
@@ -23,6 +24,6 @@ class ApplianceSerializer(serializers.ModelSerializer):
             "creation_time",
             "description",
             "creator",
-            "tasks"
+            "tasks",
         )
     

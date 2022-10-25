@@ -14,7 +14,8 @@ class UserAdminSerializer(serializers. HyperlinkedModelSerializer):
             password=validated_data['password'],
             first_name=validated_data['first_name'],
             last_name=validated_data['last_name'],
-            email=validated_data['email']
+            email=validated_data['email'],
+            member_position=validated_data['member_position']
             )
         return user
 

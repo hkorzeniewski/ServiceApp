@@ -6,6 +6,10 @@ from django.urls import path
 from appliances import views
 
 router = DefaultRouter()
+router.register(r'add', views.AddApplianceViewSet, basename="add-appliance")
+router.register(r'update', views.UpdateApplianceViewSet, basename="update-appliance")
 router.register(r'', views.ApplianceViewSet, basename="appliances")
+
+
 
 urlpatterns = router.urls

@@ -6,10 +6,10 @@ from .models import Task
 from users.serializers import UserListSerializer
 
 class TaskSerializer(serializers.ModelSerializer):
-    task_appliance = serializers.SlugRelatedField(
-        read_only=True, slug_field="name")
+    # task_appliance = serializers.SlugRelatedField(
+    #     read_only=False, slug_field="name")
     class Meta:
         model = Task
-        fields = ('id', 'task_type', 'task_description', 'task_appliance', 'task_creation_time')
+        fields = ('id', 'task_type', 'task_description', 'task_appliance', 'task_worker', 'task_creation_time')
 
 
