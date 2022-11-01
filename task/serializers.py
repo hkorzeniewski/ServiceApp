@@ -3,7 +3,7 @@ import imp
 from urllib import request
 from rest_framework import serializers
 from .models import Task
-from users.serializers import UserListSerializer
+from users.serializers import UserSerializer
 
 class TaskSerializer(serializers.ModelSerializer):
     # task_appliance = serializers.SlugRelatedField(

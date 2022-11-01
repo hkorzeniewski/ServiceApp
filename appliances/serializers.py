@@ -4,7 +4,7 @@ from rest_framework import serializers
 import urllib.request
 
 
-from users.serializers import UserListSerializer
+from users.serializers import UserSerializer
 from .models import Appliance
 from task.serializers import TaskSerializer
 from django.contrib.auth.models import User
