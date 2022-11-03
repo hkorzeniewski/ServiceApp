@@ -1,23 +1,25 @@
 from datetime import datetime
 from urllib import response
 import jwt, datetime
-from multiprocessing import AuthenticationError
+from rest_framework.exceptions import AuthenticationFailed
 from django.shortcuts import render
 from django.contrib.auth.models import User
-from rest_framework import viewsets
-from rest_framework.permissions import DjangoModelPermissions
+from rest_framework import viewsets, mixins
+from rest_framework.permissions import DjangoModelPermissions, IsAdminUser
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from django.contrib.auth import authenticate
 
-from .serializers import UserAdminSerializer, UserSerializer
+
+from .serializers import RegisterUserSerializer, UserSerializer
 from .models import User
 
 # Create your views here.
-class UserAdminViewSet(viewsets.ModelViewSet):
+class RegisterUserViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
 
 
     queryset = User.objects.all()
-    serializer_class = UserAdminSerializer
+    serializer_class = RegisterUserSerializer
     permission_classes = [DjangoModelPermissions]
 
     def get_object(self):
@@ -36,6 +38,7 @@ class UserListViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class RegisterUser(APIView):
+    permission_classes = [IsAdminUser]
 
     def post(self, request):
         serializer = UserSerializer(data=request.data)
@@ -50,12 +53,12 @@ class LoginView(APIView):
         password = request.data['password']
 
         user = User.objects.filter(username=username).first()
-
+        user = authenticate(username=username, password=password)
         if user is None:
-            raise AuthenticationError('User not found')
+            raise AuthenticationFailed('User not found')
 
         if not user.check_password(password):
-            raise AuthenticationError('Wrong password')
+            raise AuthenticationFailed('Wrong password')
 
         payload = {
             'id': user.id,
@@ -70,4 +73,30 @@ class LoginView(APIView):
             'jwt': token
         }
 
+        return response
+
+class UserView(APIView):
+
+    def get(self, request):
+        token = request.COOKIES.get('jwt')
+
+        if not token:
+            raise AuthenticationFailed('Unauthenticated')
+
+        try:
+            payload = jwt.decode(token, 'key', algorithms=['HS256'])
+        except jwt.ExpiredSignatureError:
+            raise AuthenticationFailed('Unauthenticated')
+        
+        user = User.objects.filter(id=payload['id']).first()
+        serializer = UserSerializer(user)
+        return Response(serializer.data)
+
+class LogoutView(APIView):
+    def post(self, request):
+        response = Response()
+        response.delete_cookie('jwt')
+        response.data = {
+            'message': 'success'
+        }
         return response

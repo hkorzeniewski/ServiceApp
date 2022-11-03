@@ -1,10 +1,9 @@
 from email.mime import base
 from rest_framework import routers
-from .views import UserListViewSet, RegisterUser, LoginView
+from .views import UserListViewSet, RegisterUserViewSet, LoginView, UserView, RegisterUser
 from django.urls import path
 
 
-from users.views import UserAdminViewSet
 from django.contrib.auth import get_user_model
 
 from rest_framework.decorators import api_view
@@ -12,14 +11,15 @@ from rest_framework.response import Response
 from rest_framework.reverse import reverse
 
 router = routers.SimpleRouter()
-router.register('admin', UserAdminViewSet)
+router.register('admin', RegisterUserViewSet)
 # router.register('', UserListViewSet, basename='users')
 # router.register('register', RegisterUser.as_view(), basename='register')
 urlpatterns = router.urls
 
 urlpatterns = [
-    path('register/', RegisterUser.as_view()),
+    path('register', RegisterUser.as_view()),
     path('login', LoginView.as_view()),
+    path('user', UserView.as_view()),
     path('', UserListViewSet.as_view({'get': 'list'}))
 ]
 @api_view(['GET'])

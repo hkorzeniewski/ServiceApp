@@ -12,7 +12,7 @@ class TestAppliance(TestCase):
     #     self.client =
 
     def test_appliance_list(self):
-        client = APIClient()
+        client = APIClient(enforce_csrf_checks=True)
         response = client.get("http://127.0.0.1:8000/appliances/")
-        assert response.status_code == 200
+        assert response.status_code == 401
     

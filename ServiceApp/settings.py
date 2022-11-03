@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'allauth.account',
     'rest_auth.registration',
     'users',
+    'rest_framework_simplejwt',
     'appliances',
     'parts',
     'tools',

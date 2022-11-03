@@ -3,7 +3,7 @@ from django.contrib.auth.models import Group
 from rest_framework import serializers
 from .models import User
 
-class UserAdminSerializer(serializers. HyperlinkedModelSerializer):
+class RegisterUserSerializer(serializers. HyperlinkedModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'username', 'password', 'email', 'first_name', 'last_name', 'birth_date', 'member_position']
@@ -26,3 +26,13 @@ class UserSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             'password': {'write_only': True}
         }
+
+class LoginSerializer(serializers.ModelSerializer):
+
+    password = serializers.CharField(max_length=128, min_length=2, write_only=True)
+
+    class Meta:
+        model = User
+        fields = ('username', 'password', 'token')
+
+        read_only_fields = ['token']
