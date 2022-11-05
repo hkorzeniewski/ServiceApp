@@ -6,7 +6,8 @@ from django.contrib.auth.hashers import (
     is_password_usable,
     make_password,
 )
-
+import jwt
+from datetime import datetime, timedelta
 
 # # Create your models here.
 # class MyUserMenager(BaseUserManager):
@@ -58,5 +59,13 @@ class User(AbstractUser):
             ("chairman_permission", "Chairman ermissions")
         )
 
-
+    @property
+    def token(self):
+        token = jwt.encode(
+            {
+                'username': self.username,
+                'email': self.email,
+                'exp': datetime.utcnow() + timedelta(hours=24)
+            }
+        )
 

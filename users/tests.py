@@ -25,36 +25,9 @@ class BaseTestCase(APITestCase):
             'username': self.username,
             'password': self.password
         }
-
-
-# class AdminCreateUserTest(APITestCase):
-#     def setUp(self):
-#         self.client = APIClient()
-#         # self.client = client.get("http://127.0.0.1:8000/users/admin")
-#         self.superuser = User.objects.create_superuser(
-#             username='testuser', email='test@test.com', password='test1234' )
-#         self.superuser.is_superuser = True
-#         self.superuser.is_staff = True
-#         self.superuser.save()
-#         # self.client.login(username='test', password='testpassword')
-#         self.data = { 
-#             "username": "tests", 
-#             "password": "test1234", 
-#             "email": "test@test.com", 
-#             "first_name": "testfirstname", 
-#             "last_name": "testlastname", 
-#             "member_position": "Worker"
-#             }
-
-#     def test_admin_can_create_user(self):
-#         self.client.force_login(user=self.superuser)
-#         # print(self.superuser.is_superuser)
-
-#         response = self.client.post(
-#             "http://127.0.0.1:8000/users/admin/", self.data, format='json')
-#         # print(response.data)
-#         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-
+        self.client = APIClient(enforce_csrf_checks=True)
+        self.response = self.client.post('http://127.0.0.1:8000/api/token/', self.data)
+        self.access_token = self.response.data['access']
 
 
 class TestCustomResponsePayload(BaseTestCase):
@@ -63,28 +36,19 @@ class TestCustomResponsePayload(BaseTestCase):
         """
         Ensure JWT login view using JSON POST works.
         """
-        client = APIClient(enforce_csrf_checks=True)
-        # print(self.data)
-        response = client.post(
-            "http://127.0.0.1:8000/api/token/", self.data, format='json')
-        # response = self.client.get("http://127.0.0.1:8000/users/login")
-        # print(response.data)
-        decoded_payload = utils.jwt_decode_handler(response.data['access'])
+
+        decoded_payload = utils.jwt_decode_handler(self.response.data['access'])
         decoded_username = utils.jwt_payload_handler(self.user)
         # print(decoded_username['username'])
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(self.response.status_code, status.HTTP_200_OK)
         self.assertEqual(decoded_username['username'], self.username)
 
 
 class ObtainJSONWebTokenTests(BaseTestCase):
     def test_jwt_login_form(self):
-        client = APIClient(enforce_csrf_checks=True)
 
-        response = client.post('http://127.0.0.1:8000/api/token/', self.data)
-        # print(client)
-        # decoded_payload = utils.jwt_decode_handler(response.data['access'])
         decoded_username = utils.jwt_payload_handler(self.user)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(self.response.status_code, status.HTTP_200_OK)
         self.assertEqual(decoded_username['username'], self.username)
 
     def test_jwt_login_json_bad_creds(self):
@@ -92,13 +56,12 @@ class ObtainJSONWebTokenTests(BaseTestCase):
         Ensure JWT login view using JSON POST fails
         if bad credentials are used.
         """
-        client = APIClient(enforce_csrf_checks=True)
 
         self.data['password'] = 'wrong'
-        response = client.post(
+        self.response = self.client.post(
             'http://127.0.0.1:8000/api/token/', self.data, format='json')
         # print(response)
-        self.assertEqual(response.status_code, 401)
+        self.assertEqual(self.response.status_code, 401)
 
 
 class UserListTest(BaseTestCase):
@@ -109,12 +72,45 @@ class UserListTest(BaseTestCase):
         self.assertEquals(response.status_code, 401)
 
     def test_authorized_can_see_page(self):
-        client = APIClient(enforce_csrf_checks=True)
-        response = client.post('http://127.0.0.1:8000/api/token/', self.data)
-        print(response.data)
-        # self.client.force_login(user=self.user)
-        print(response.data['access'])
-        response = self.client.get("http://127.0.0.1:8000/users/", headers = {'Authorization': 'Token ' + response.data['access']})
-        print(response)
-        self.assertEqual(response.status_code, 200)
-        self.client.logout()
+        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.access_token}')
+        self.response = self.client.get(
+            "http://127.0.0.1:8000/users/")
+        self.assertEqual(self.response.status_code, 200)
+
+
+class RegisterUserTest(BaseTestCase):
+    def setUp(self):
+        self.register_data = {
+            "username": "tests",
+            "password": "test1234",
+            "email": "test@test.com",
+            "first_name": "testfirstname",
+            "last_name": "testlastname",
+            "member_position": "Worker"
+        }
+        return super().setUp()
+
+    def test_unauthorized_cannot_see_page(self):
+        response = self.client.get("http://127.0.0.1:8000/users/register")
+        self.assertEquals(response.status_code, 401)
+
+    def test_authorized_but_not_admin_can_register(self):
+        self.client.credentials(
+            HTTP_AUTHORIZATION=f'Bearer {self.access_token}')
+        response = self.client.post(
+            "http://127.0.0.1:8000/users/register", self.register_data, format='json')
+        
+        self.assertEquals(response.status_code, 403)
+    
+    def test_admin_can_register(self):
+        self.user.is_admin = True
+        self.user.is_staff = True
+        self.user.save()
+        self.response = self.client.post(
+            'http://127.0.0.1:8000/api/token/', self.data)
+        new_access_token = self.response.data['access']
+        self.client.credentials(
+            HTTP_AUTHORIZATION=f'Bearer {new_access_token}')
+        response = self.client.post(
+            "http://127.0.0.1:8000/users/register", self.register_data, format='json')
+        self.assertEquals(response.status_code, 200)
