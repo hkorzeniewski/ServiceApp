@@ -6,7 +6,7 @@ from rest_framework.decorators import api_view, action
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.mixins import RetrieveModelMixin, CreateModelMixin, ListModelMixin, UpdateModelMixin
-from rest_framework.permissions import DjangoModelPermissions, IsAuthenticated
+from rest_framework.permissions import DjangoModelPermissions, IsAuthenticated, IsAdminUser
 from django.contrib.auth.mixins import PermissionRequiredMixin
 
 
@@ -15,8 +15,6 @@ from .serializers import ApplianceSerializer
 from .permissions import AddAppliancePermissions, UpdateAppliancePermissions
 
 from users.models import User
-
-
 
 
 # Create your views here.
@@ -46,7 +44,8 @@ class AddApplianceViewSet(CreateModelMixin, ListModelMixin, viewsets.GenericView
         serializer = ApplianceSerializer(data=request.data)
         self.check_object_permissions(request, self.request.user)
         if serializer.is_valid(raise_exception=True):
-            pass
+            serializer.save()
+            return Response(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
@@ -56,7 +55,7 @@ class AddApplianceViewSet(CreateModelMixin, ListModelMixin, viewsets.GenericView
                 IsAuthenticated,
             ]
         elif self.action == "create":
-            permission_classes = [AddAppliancePermissions]
+            permission_classes = [IsAdminUser]
         else: 
             permission_classes = [IsAuthenticated]
         return [permission() for permission in permission_classes]
