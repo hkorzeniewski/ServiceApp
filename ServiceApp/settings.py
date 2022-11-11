@@ -14,6 +14,10 @@ from pathlib import Path
 import os
 from dotenv import load_dotenv
 from datetime import timedelta
+import environ
+
+env = environ.Env()
+environ.Env.read_env()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -95,6 +99,14 @@ DATABASES = {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.postgresql_psycopg2',
+    #     'NAME': env("DB_NAME"),
+    #     'USER': env("DB_USER"),
+    #     'PASSWORD': env("DB_PASSWORD"),
+    #     'HOST': env("DB_HOST"),
+    #     'PORT': env("DB_PORT"),
+    # }
 }
 
 
@@ -163,3 +175,6 @@ SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),
     'ROTATE_REFRESH_TOKENS': True,
 }
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'

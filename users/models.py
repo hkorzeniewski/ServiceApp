@@ -1,13 +1,12 @@
-from statistics import mode
-from django.db import models
-from django.contrib.auth.models import User, AbstractBaseUser, BaseUserManager, AbstractUser
-from django.contrib.auth.hashers import (
-    check_password,
-    is_password_usable,
-    make_password,
-)
-import jwt
 from datetime import datetime, timedelta
+from statistics import mode
+
+import jwt
+from django.contrib.auth.hashers import (check_password, is_password_usable,
+                                         make_password)
+from django.contrib.auth.models import (AbstractBaseUser, AbstractUser,
+                                        BaseUserManager)
+from django.db import models
 
 # # Create your models here.
 # class MyUserMenager(BaseUserManager):
@@ -66,6 +65,6 @@ class User(AbstractUser):
                 'username': self.username,
                 'email': self.email,
                 'exp': datetime.utcnow() + timedelta(hours=24)
-            }
+            }, 'key', algorithm='HS256'
         )
 

@@ -3,7 +3,7 @@ from django.contrib.auth.models import Group
 from rest_framework import serializers
 from .models import User
 
-class RegisterUserSerializer(serializers. HyperlinkedModelSerializer):
+class RegisterUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'username', 'password', 'email', 'first_name', 'last_name', 'birth_date', 'member_position']

@@ -29,7 +29,7 @@ class BaseTestCase(APITestCase):
         self.response = self.client.post('http://127.0.0.1:8000/api/token/', self.data)
         self.access_token = self.response.data['access']
 
-
+ 
 class TestCustomResponsePayload(BaseTestCase):
 
     def test_jwt_login_custom_response_json(self):

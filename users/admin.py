@@ -6,6 +6,7 @@ from .models import User
 
 # Register your models here.
 
-admin.site.register(User, UserAdmin)
+class MyUserAdmin(admin.ModelAdmin):
+    list_display = ('username', 'first_name', 'last_name', 'email', 'birth_date', 'member_position')
 
-# class MyUserAdmin(UserAdmin)
+admin.site.register(User, MyUserAdmin)

@@ -83,7 +83,7 @@ class UpdateApplianceViewSet(UpdateModelMixin, RetrieveModelMixin, ListModelMixi
                 IsAuthenticated,
             ]
         elif self.action == "update":
-            permission_classes = [UpdateAppliancePermissions]
+            permission_classes = [IsAdminUser]
         else: 
             permission_classes = [IsAuthenticated]
         return [permission() for permission in permission_classes]
