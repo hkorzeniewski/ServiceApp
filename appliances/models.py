@@ -13,7 +13,7 @@ class Appliance(models.Model):
 
     name = models.CharField(max_length=100, blank=False)
     serial_number = models.CharField(max_length=20, blank=True, default='')
-    creation_time = models.DateTimeField(auto_now_add=True)
+    creation_time = models.DateTimeField()
     description = models.TextField()
     creator = models.ForeignKey(User, related_name='creator', on_delete=models.CASCADE)
 

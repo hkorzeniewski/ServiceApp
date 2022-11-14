@@ -5,16 +5,31 @@ import urllib.request
 
 
 from users.serializers import UserSerializer
-from .models import Appliance
+from .models import Appliance, AppliancePhoto
 from task.serializers import TaskSerializer
 # from django.contrib.auth.models import User
 from users.models import User
+
+class AppliancePhotoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AppliancePhoto
+        fields = (
+            "image",
+            "appliance",
+            "image_added_time"
+        )
 
 class ApplianceSerializer(serializers.ModelSerializer):
 
     # creator = serializers.SlugRelatedField(
     #     read_only=False, slug_field="username")
-    tasks = TaskSerializer(read_only=True, many=True)
+    # tasks = TaskSerializer(read_only=True, many=True)
+    tasks = serializers.SlugRelatedField(
+        many=True,
+        read_only=True,
+        slug_field='task_description'
+    )
+    photos = AppliancePhotoSerializer(read_only=True, many=True)
     class Meta:
         model = Appliance
         fields = (
@@ -25,6 +40,7 @@ class ApplianceSerializer(serializers.ModelSerializer):
             "description",
             "creator",
             "tasks",
+            "photos"
         )
     
     def create(self, validated_data):
@@ -37,3 +53,4 @@ class ApplianceSerializer(serializers.ModelSerializer):
         
         appliance.save()
         return appliance
+
