@@ -51,6 +51,9 @@ class User(AbstractUser):
     REQUIRED_FIELDS = ['email']
     # USERNAME_FIELD = 'username'
 
+    def __str__(self):
+        return self.username
+
     class Meta:
         permissions = (
             ("worker_permission", "Worker permissions"),
