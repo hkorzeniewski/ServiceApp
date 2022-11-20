@@ -8,6 +8,7 @@ from rest_framework.views import APIView
 from rest_framework.mixins import RetrieveModelMixin, CreateModelMixin, ListModelMixin, UpdateModelMixin
 from rest_framework.permissions import DjangoModelPermissions, IsAuthenticated, IsAdminUser
 from django.contrib.auth.mixins import PermissionRequiredMixin
+from rest_framework import filters
 
 
 from .models import Appliance
@@ -23,7 +24,8 @@ class ApplianceViewSet(viewsets.ReadOnlyModelViewSet, PermissionRequiredMixin):
     queryset = Appliance.objects.all()
     serializer_class = ApplianceSerializer
     permission_classes =[IsAuthenticated]
-
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['serial_number', 'name']
 
     # def perform_create(self, serializer):
     #     serializer.save(creator=self.request.user)

@@ -7,5 +7,6 @@ from parts import views
 
 router = DefaultRouter()
 router.register(r'', views.PartListViewSet, basename='parts')
+router.register(r'detail/{pk}', views.PartDetailViewSet, basename='part-details')
 
 urlpatterns = router.urls

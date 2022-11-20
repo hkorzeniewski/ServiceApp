@@ -13,7 +13,7 @@ class Part(models.Model):
     name = models.CharField(max_length=100, blank=False)
     serial_number = models.CharField(max_length=20, blank=True, default='')
     quantity = models.IntegerField()
-    price = models.IntegerField(blank=True)
+    price = models.FloatField(blank=True)
     part_addition_time = models.DateTimeField(auto_now_add=True)
     part_adder = models.ForeignKey(User, related_name='part_adder', on_delete=models.CASCADE)
     part_type = models.CharField(max_length=20, choices=PART_TYPES)
@@ -44,3 +44,6 @@ class ElectronicPart(Part):
 
     surface_mount_technology = models.CharField(max_length=20, choices=TECHNOLOGY_TYPES)
     pin_quantity = models.IntegerField()
+    resistance = models.CharField(max_length=20, blank=True)
+    capacity = models.CharField(max_length=20, blank=True)
+    tolerance = models.FloatField(blank=True)
