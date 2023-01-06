@@ -8,12 +8,13 @@ from users.models import User
 from pygments.lexers import get_lexer_by_name
 from pygments.formatters.html import HtmlFormatter
 from pygments import highlight
+from datetime import datetime
 
 class Appliance(models.Model):
 
     name = models.CharField(max_length=100, blank=False)
     serial_number = models.CharField(max_length=20, blank=True, default='')
-    creation_time = models.DateTimeField()
+    creation_time = models.DateTimeField(default=datetime.now())
     description = models.TextField()
     creator = models.ForeignKey(User, related_name='creator', on_delete=models.CASCADE)
 

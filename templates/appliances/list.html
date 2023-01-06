@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Sprzęty</h1>
+
+<body>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Nazwa</th>
+                <th scope="col">Numer seryjny</th>
+                <th scope="col">Data dodania</th>
+            </tr>
+        </thead>
+        
+        <tbody>
+            {% for appliance in appliances %} 
+                <tr>
+                    <td>{{ appliance.id }}</td>
+                    <td>{{ appliance.name }}</td>
+                    <td>{{ appliance.serial_number }}</td>
+                    <td>{{ appliance.creation_time }}</td>
+
+                </tr>
+            {% endfor %}
+        </tbody>
+       
+        
+        
+    </table>
+
+</body>
+{% endblock %}

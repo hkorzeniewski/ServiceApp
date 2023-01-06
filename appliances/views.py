@@ -9,26 +9,33 @@ from rest_framework.mixins import RetrieveModelMixin, CreateModelMixin, ListMode
 from rest_framework.permissions import DjangoModelPermissions, IsAuthenticated, IsAdminUser
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from rest_framework import filters
-
+from django.views.generic import TemplateView
+from django.http import HttpResponseRedirect
 
 from .models import Appliance
 from .serializers import ApplianceSerializer
 from .permissions import AddAppliancePermissions, UpdateAppliancePermissions
+from datetime import datetime
 
 from users.models import User
-
+from .forms import ApplianceForm
 
 # Create your views here.
 
 class ApplianceViewSet(viewsets.ReadOnlyModelViewSet, PermissionRequiredMixin):
     queryset = Appliance.objects.all()
     serializer_class = ApplianceSerializer
-    permission_classes =[IsAuthenticated]
+    # permission_classes =[IsAuthenticated]
     filter_backends = [filters.SearchFilter]
     search_fields = ['serial_number', 'name']
-
+    template_name = "appliances/list.html"
     # def perform_create(self, serializer):
     #     serializer.save(creator=self.request.user)
+
+    # def get_context_data(self, **kwargs):
+    #     context_data = super().get_context_data(**kwargs)
+    #     context_data["appliances"] = Appliance.objects.all()
+    #     return context_data
 
 class AddApplianceViewSet(CreateModelMixin, ListModelMixin, viewsets.GenericViewSet):
     queryset = Appliance.objects.all()
@@ -92,4 +99,33 @@ class UpdateApplianceViewSet(UpdateModelMixin, RetrieveModelMixin, ListModelMixi
     
 
 
+class ApplianceView(TemplateView):
+    template_name = "appliances/list.html"
 
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        context_data["appliances"] = Appliance.objects.all()
+        return context_data
+
+# class ApplianceAddView(TemplateView):
+#     template_name = "appliances/add_appliance.html"
+
+#     def add_appliance(request):
+#         form = ApplianceForm
+#         if request.method == "POST":
+#             print(request.POST)
+#             form = ApplianceForm(request.POST)
+#             if form.is_valid():
+#                 form.save()
+
+#         return render(request, 'appliances/add_appliance.html', {'form':form})
+
+def add_appliance(request):
+        form = ApplianceForm
+        if request.method == "POST":
+            form = ApplianceForm(request.POST)
+            if form.is_valid():
+                form.save()
+                return HttpResponseRedirect('serviceapp/appliance-list')
+
+        return render(request, 'appliances/add_appliance.html', {'form':form})

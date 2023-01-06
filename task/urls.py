@@ -5,7 +5,12 @@ from rest_framework.routers import DefaultRouter
 from django.urls import path
 from task import views
 
-router = DefaultRouter()
-router.register(r'tasks', views.TaskViewSet, basename="tasks")
+from .views import TaskView
 
-urlpatterns = router.urls
+router = DefaultRouter()
+# router.register(r'serviceapp/tasks', views.TaskViewSet, basename="tasks")
+
+urlpatterns = [
+    path("serviceapp/tasks-list/", TaskView.as_view(), name="tasks")
+]
+urlpatterns += router.urls

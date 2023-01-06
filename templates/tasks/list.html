@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Zadania</h1>
+
+<body>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Rodzaj zadania</th>
+                <th scope="col">Opis</th>
+                <th scope="col">Data dodania</th>
+                <th scope="col">Twórca zadania</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for task in tasks %}
+            <tr>
+                <td>{{ task.id }}</td>
+                <td>{{ task.task_type }}</td>
+                <td>{{ task.task_description }}</td>
+                <td>{{ task.task_creation_time }}</td>
+                <td>{{ task.task_creator }}</td>
+                <td>{{ task.appliance}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+
+
+
+    </table>
+
+</body>
+{% endblock %}

@@ -3,13 +3,20 @@ from rest_framework import status, viewsets
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django_filters.rest_framework import DjangoFilterBackend
-
+from django.views.generic import TemplateView
 
 from .models import Task
 from .serializers import TaskSerializer
 from rest_framework.permissions import DjangoModelPermissions, IsAuthenticated
 
 # Create your views here.
+class TaskView(TemplateView):
+    template_name = "tasks/list.html"
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        context_data["tasks"] = Task.objects.all()
+        return context_data
 
 class TaskViewSet(viewsets.ModelViewSet):
     # queryset = Task.objects.all()

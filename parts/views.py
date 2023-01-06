@@ -18,7 +18,7 @@ class PartListViewSet(viewsets.ReadOnlyModelViewSet):
         return queryset
 
     @action(detail=False, methods=['POST'], permission_classes = [IsAuthenticated])
-    def substract(self, request):
+    def substract(self, request, *args, **kwargs):
         user = request.user
         part = request.data
 
