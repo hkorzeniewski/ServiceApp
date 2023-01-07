@@ -15,7 +15,8 @@ router.register(r'api/appliances', views.ApplianceViewSet, basename="appliances"
 
 urlpatterns = [
     path("serviceapp/appliances-list/", ApplianceView.as_view(), name="appliance-list"),
-    path("serviceapp/appliance-add", views.add_appliance, name="add-appliance")
+    path("serviceapp/appliance-add", views.add_appliance, name="add-appliance"),
+    path("serviceapp/appliance/<appliance_id>", views.appliance_detail, name='appliance-detail')
 ]
 
 urlpatterns += router.urls

@@ -12,7 +12,8 @@ from rest_framework import filters
 from django.views.generic import TemplateView
 from django.http import HttpResponseRedirect
 
-from .models import Appliance
+from .models import Appliance, AppliancePhoto
+from task.models import Task
 from .serializers import ApplianceSerializer
 from .permissions import AddAppliancePermissions, UpdateAppliancePermissions
 from datetime import datetime
@@ -126,6 +127,18 @@ def add_appliance(request):
             form = ApplianceForm(request.POST)
             if form.is_valid():
                 form.save()
-                return HttpResponseRedirect('serviceapp/appliance-list')
+                return HttpResponseRedirect('/serviceapp')
 
         return render(request, 'appliances/add_appliance.html', {'form':form})
+
+
+def appliance_detail(request, appliance_id):
+    print(appliance_id)
+    appliance = Appliance.objects.get(pk=appliance_id)
+    appliance_photos = AppliancePhoto.objects.filter(appliance=appliance)
+    appliance_tasks = Task.objects.filter(task_appliance=appliance)
+    print(appliance_photos)
+    print(appliance_tasks)
+
+    return render(request, 'appliances/appliance_detail.html', {'appliance':appliance, 'appliance_photos':appliance_photos, 'appliance_tasks': appliance_tasks})
+

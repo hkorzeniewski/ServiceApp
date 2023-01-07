@@ -20,7 +20,7 @@
             {% for appliance in appliances %} 
                 <tr>
                     <td>{{ appliance.id }}</td>
-                    <td>{{ appliance.name }}</td>
+                    <td><a href="{% url 'appliance-detail' appliance.id %}">{{ appliance.name }}</a> </td>
                     <td>{{ appliance.serial_number }}</td>
                     <td>{{ appliance.creation_time }}</td>
 

@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <center>
+        <h1>Sprzęt: {{ appliance.name}}</h1>
+        <div class="accordion accordion-flush" id="accordionFlushExample">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="flush-headingOne">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+                        Main Info
+                    </button>
+                </h2>
+                <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne"
+                    data-bs-parent="#accordionFlushExample">
+                    <div class="accordion-body"><li>Numer seryjny: {{ appliance.serial_number }} </br>
+                    <li>Opis: {{ appliance.description }}</br>
+                    <li>Data dodania: {{ appliance.creation_time }}</br></li></div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="flush-headingTwo">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
+                        Photos
+                    </button>
+                </h2>
+                <div id="flush-collapseTwo" class="accordion-collapse collapse" aria-labelledby="flush-headingTwo"
+                    data-bs-parent="#accordionFlushExample">
+                    <div class="accordion-body">{% for photo in appliance_photos %}
+                    <li>{{photo.image_added_time}}</li>
+                    <img src="/media/{{photo.image}}" alt="My image" width="300" height="300" />
+                    {% endfor %}</div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="flush-headingThree">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree">
+                        Tasks
+                    </button>
+                </h2>
+                <div id="flush-collapseThree" class="accordion-collapse collapse" aria-labelledby="flush-headingThree"
+                    data-bs-parent="#accordionFlushExample">
+                    <div class="accordion-body"><table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Rodzaj zadania</th>
+                                <th scope="col">Opis</th>
+                                <th scope="col">Data dodania</th>
+                                <th scope="col">Twórca zadania</th>
+                            </tr>
+                        </thead>
+                    
+                        <tbody>
+                            {% for task in appliance_tasks %}
+                            <tr>
+                                <td>{{ task.id }}</td>
+                                <td>{{ task.task_type }}</td>
+                                <td>{{ task.task_description }}</td>
+                                <td>{{ task.task_creation_time }}</td>
+                                <td>{{ task.task_creator }}</td>
+                                <td>{{ task.appliance}}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    
+                    
+                    
+                    </table></div>
+                </div>
+            </div>
+        </div>
+
+
+    </center>
+{% endblock %}

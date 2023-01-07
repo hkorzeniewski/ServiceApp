@@ -32,7 +32,7 @@ urlpatterns = [
     # path('api/', include(router.urls)),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('admin/', admin.site.urls),
-    path('users/', include("users.urls")),
+    path('', include("users.urls")),
     path('', include("appliances.urls")),
     # path('parts/', include("parts.urls")),
     path('', include("task.urls")),

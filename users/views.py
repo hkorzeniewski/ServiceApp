@@ -2,17 +2,19 @@ from datetime import datetime
 from urllib import response
 import jwt, datetime
 from rest_framework.exceptions import AuthenticationFailed
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, login, logout, get_user_model
 from rest_framework import viewsets, mixins
 from rest_framework.permissions import DjangoModelPermissions, IsAdminUser
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.decorators import action
 from django.contrib.auth import authenticate
-
 
 from .serializers import RegisterUserSerializer, UserSerializer
 from .models import User
+from .forms import LoginForm
 
 # Create your views here.
 class RegisterUserViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
@@ -100,3 +102,25 @@ class LogoutView(APIView):
             'message': 'success'
         }
         return response
+
+
+def login_view(request):
+    form = LoginForm(request.POST or None)
+    print(form)
+    if form.is_valid():
+        username = form.cleaned_data.get("username")
+        password = form.cleaned_data.get("password")
+        # user = authenticate(username=username, password=password)
+        user = User.objects.filter(username=username, password=password).first()
+        if user is not None:
+            login(request, user)
+            return redirect("/serviceapp/")
+        else:
+            print('invalid user')
+            request.session['invalid_user'] = 1  # 1 == True
+    return render(request, "users/login.html", {"form": form})
+
+def logout_view(request):
+    logout(request)
+    # request.user == Anon User
+    return redirect("/serviceapp/")

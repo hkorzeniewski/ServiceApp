@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <article>Strona główna</article>   
+    <article>Strona główna</article>
+    <p>Hi {{user.username}}</p>
+    <a href="{% url 'login' %}" class="button button2">Login</a>
 {% endblock %}  

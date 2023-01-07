@@ -2,7 +2,7 @@ from email.mime import base
 from rest_framework import routers
 from .views import UserListViewSet, RegisterUserViewSet, LoginView, UserView, RegisterUser
 from django.urls import path
-
+from . import views
 
 from django.contrib.auth import get_user_model
 
@@ -18,8 +18,9 @@ urlpatterns = router.urls
 
 urlpatterns = [
     path('register', RegisterUser.as_view()),
-    path('login', LoginView.as_view()),
+    path('serviceapp/login', views.login_view, name='login'),
     path('user', UserView.as_view()),
+    path('logout', views.logout_view, name='logout'),
     path('', UserListViewSet.as_view({'get': 'list'}))
 ]
 @api_view(['GET'])

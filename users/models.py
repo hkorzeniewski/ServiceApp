@@ -40,7 +40,8 @@ class User(AbstractUser):
         ('Menager', 'Menager'),
         ('Worker', 'Worker')
     )
-  
+    username = models.CharField(max_length=255, unique=True)
+    password = models.CharField(max_length=255)
     first_name = models.CharField(max_length=20, null=False)
     last_name = models.CharField(max_length=20, null=False)
     email = models.EmailField(max_length=250)
@@ -49,7 +50,7 @@ class User(AbstractUser):
 
     # objects = MyUserMenager()   
     REQUIRED_FIELDS = ['email']
-    # USERNAME_FIELD = 'username'
+    USERNAME_FIELD = 'username'
 
     def __str__(self):
         return self.username
@@ -61,13 +62,13 @@ class User(AbstractUser):
             ("chairman_permission", "Chairman ermissions")
         )
 
-    @property
-    def token(self):
-        token = jwt.encode(
-            {
-                'username': self.username,
-                'email': self.email,
-                'exp': datetime.utcnow() + timedelta(hours=24)
-            }, 'key', algorithm='HS256'
-        )
+    # @property
+    # def token(self):
+    #     token = jwt.encode(
+    #         {
+    #             'username': self.username,
+    #             'email': self.email,
+    #             'exp': datetime.utcnow() + timedelta(hours=24)
+    #         }, 'key', algorithm='HS256'
+    #     )
 
