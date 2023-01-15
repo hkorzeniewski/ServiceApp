@@ -29,7 +29,7 @@ class AppliancePhoto(models.Model):
 
     def image_tag(self):
         if self.image:
-            return mark_safe('<img src="{}" width="300" height="300" />'.format(self.image.url))
+            return mark_safe('<img src="{}"  />'.format(self.image.url))
         return ""
         
     image_tag.short_description = 'Image'

@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 
 {% block content %}
+
+{% load crispy_forms_tags %}
     <center>
         <h1>Sprzęt: {{ appliance.name}}</h1>
         <div class="accordion accordion-flush" id="accordionFlushExample">
@@ -15,7 +17,9 @@
                     data-bs-parent="#accordionFlushExample">
                     <div class="accordion-body"><li>Numer seryjny: {{ appliance.serial_number }} </br>
                     <li>Opis: {{ appliance.description }}</br>
-                    <li>Data dodania: {{ appliance.creation_time }}</br></li></div>
+                    <li>Data dodania: {{ appliance.creation_time }}</br></li>
+                    <li>Dodajacy: {{ appliance.creator.username }}</br></li>
+                </div>
                 </div>
             </div>
             <div class="accordion-item">
@@ -31,6 +35,9 @@
                     <li>{{photo.image_added_time}}</li>
                     <img src="/media/{{photo.image}}" alt="My image" width="300" height="300" />
                     {% endfor %}</div>
+                    <button type="button">
+                        <a href="{% url 'upload-photo' appliance.id %}">Upload new photos</a>
+                    </button>
                 </div>
             </div>
             <div class="accordion-item">

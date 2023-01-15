@@ -1,6 +1,6 @@
 import imp
 from os import stat
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from rest_framework import viewsets, status, permissions,renderers, generics
 from rest_framework.decorators import api_view, action
 from rest_framework.response import Response
@@ -11,6 +11,7 @@ from django.contrib.auth.mixins import PermissionRequiredMixin
 from rest_framework import filters
 from django.views.generic import TemplateView
 from django.http import HttpResponseRedirect
+from django.core.files.storage import FileSystemStorage
 
 from .models import Appliance, AppliancePhoto
 from task.models import Task
@@ -19,7 +20,7 @@ from .permissions import AddAppliancePermissions, UpdateAppliancePermissions
 from datetime import datetime
 
 from users.models import User
-from .forms import ApplianceForm
+from .forms import ApplianceForm, AppliancePhotoForm
 
 # Create your views here.
 
@@ -126,8 +127,10 @@ def add_appliance(request):
         if request.method == "POST":
             form = ApplianceForm(request.POST)
             if form.is_valid():
-                form.save()
-                return HttpResponseRedirect('/serviceapp')
+                instance = form.save(commit=False)
+                instance.creator = request.user
+                instance.save()
+                return redirect('appliance-list')
 
         return render(request, 'appliances/add_appliance.html', {'form':form})
 
@@ -142,3 +145,30 @@ def appliance_detail(request, appliance_id):
 
     return render(request, 'appliances/appliance_detail.html', {'appliance':appliance, 'appliance_photos':appliance_photos, 'appliance_tasks': appliance_tasks})
 
+# def upload_photo(request):
+#     if request.method == 'POST' and request.FILES['upload']:
+#         print(request)
+#         upload = request.FILES['upload']
+#         fss = FileSystemStorage()
+#         file = fss.save(upload.name, upload)
+#         file_url = fss.url(file)
+#         return render(request, 'appliances/upload_appliance.html', {'file_url': file_url})
+#     return render(request, 'appliances/upload_appliance.html')
+    
+def upload_photo(request, appliance_id):
+    if request.method == "POST":
+        form = AppliancePhotoForm(request.POST, request.FILES)
+        if form.is_valid():
+            instance = form.save(commit=False)
+            instance.appliance = Appliance.objects.get(pk=appliance_id)
+            instance.save()
+            print(instance)
+            # return HttpResponseRedirect(f'serviceapp/appliance/{appliance_id}')
+            # return HttpResponseRedirect(f'/')
+            return redirect('appliance-detail', appliance_id)
+
+    form = AppliancePhotoForm()
+    # photos= AppliancePhoto.objects.all()
+    photos= AppliancePhoto.objects.filter(appliance_id=appliance_id)
+    print(photos)
+    return render(request=request, template_name="appliances/upload_appliance.html", context={'form':form, 'photos':photos})
